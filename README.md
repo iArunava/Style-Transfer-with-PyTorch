@@ -31,13 +31,13 @@ python3 style_transfer.py -c='/path/to/content/image' -s='/path/to/style/image' 
 ## Examples
 
 Content Image:
-![img-20181223-wa0005](https://user-images.githubusercontent.com/26242097/50539713-d5279e00-0baa-11e9-8ae7-6869a124e019.jpg)
+<img src='https://user-images.githubusercontent.com/26242097/50540731-39535d80-0bbd-11e9-8f77-1cc0d153c1b6.jpg'/>
 
 Style Image:
-![final](https://github.com/iArunava/Style-Transfer-with-PyTorch/blob/master/images/style_img/style2.jpg)
+<img src='https://github.com/iArunava/Style-Transfer-with-PyTorch/blob/master/images/style_img/style2.jpg'/>
 
 Stylized Image:
-![final](https://user-images.githubusercontent.com/26242097/50539704-a5789600-0baa-11e9-8b65-685255f17d5d.png)
+<img src='https://user-images.githubusercontent.com/26242097/50540732-453f1f80-0bbd-11e9-883d-65131ea5122a.png'/>
 
 ## License
 
