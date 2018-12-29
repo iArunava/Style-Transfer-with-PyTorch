@@ -45,10 +45,17 @@ parser.add_argument('-si', '--show-image-at-intervals',
     default=False,
     help='Show image at intervals')
 
+parser.add_argument('-lr', '--learning-rate',
+    type=float,
+    default=0.003,
+    help='Learning Rate')
+
 FLAGS, unparsed = parser.parse_known_args()
 
 # Get the pretrained features of model
+print ('[INFO]Loading Model...')
 vgg = models.vgg19(pretrained=True).features
+print ('[INFO]Model Loaded Successfully!')
 
 # Freeze the parameters as we won't be traning the model
 for param in vgg.parameters():
@@ -60,19 +67,25 @@ vgg.to(device)
 
 # Load the content image
 content = load_image(FLAGS.content_image).to(device)
+print ('[INFO]Loaded Content Image')
 
 # Load the style image
 style = load_image(FLAGS.style_image).to(device)
+print ('[INFO]Loaded Style Image')
 
 # Get the Content and feature representations of content and style image
 content_feaures = get_features(content, vgg)
+print ('[INFO]Got the Content Features.')
 style_features = get_features(style, vgg)
+print ('[INFO]Got the Style Features.')
 
 # Calculate the gram matrices for each layer in style representation
 style_grams = {layer: gram_matrix(style_features[layer]) for layer in style_features}
+print ('[INFO]Calculated the Gram Matrices from the style layers')
 
 # Create the target image
 target = content.clone().requires_grad_(True).to(device)
+print ('[INFO]Created target image')
 
 # Weights for each style layer
 style_weights = {
@@ -91,9 +104,10 @@ style_weight = FLAGS.style_weight
 show_every = FLAGS.show_every
 
 # Iteration hyperparameters
-optimizer = optim.Adam([target], lr=0.003)
+optimizer = optim.Adam([target], lr=FLAGS.learning_rate)
 epochs = FLAGS.epochs
 
+print ('[INFO]Starting Training...')
 for ii in range(1, epochs+1):
     # Get the features from target image
     target_features = get_features(target, vgg)
@@ -132,6 +146,7 @@ for ii in range(1, epochs+1):
     total_loss.backward()
     optimizer.step()
 
+    print ('[INFO]Epoch {} Completed!'.format(ii))
     # Display if Interval
     if ii % show_every == 0:
         print ('Epochs: {} Loss: {}'.format(ii, total_loss.item()))
@@ -142,6 +157,9 @@ for ii in range(1, epochs+1):
             plt.axis('off')
             plt.show()
 
+print ('[INFO]Style Transfer Complete!')
+
+print ('[INFO]Displaying final image!')
 # Display final image
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
 ax1.imshow(im_convert(content))
