@@ -57,3 +57,29 @@ def im_convert(tensor):
     img = img.clip(0, 1)
 
     return img
+
+def get_features(img, model, layers=None):
+    """
+    Get the feature representation for the set of layers
+    """
+
+    # The layers considered
+    if layers == None:
+        layers = {
+            '0' : 'conv1_1',
+            '5' : 'conv2_1',
+            '8' : 'conv3_1',
+            '19' : 'conv4_1',
+            '21' : 'conv4_2',
+            '28' : 'conv5_1'
+        }
+
+    # Get the output of the layers
+    features = {}
+    x = image
+    for name, layer in model._modules.items():
+        x = layer(x)
+        if name in layers:
+            features[layers[name]] = x
+
+    return features
