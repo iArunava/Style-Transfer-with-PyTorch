@@ -45,7 +45,7 @@ def im_convert(tensor):
     img = tensor.to('cpu').clone().detach()
 
     # Remove the batch dimension
-    img = img.squeeze()
+    img = img.numpy().squeeze()
 
     # Get the channels last
     img = img.transpose(1, 2, 0)
@@ -76,7 +76,7 @@ def get_features(img, model, layers=None):
 
     # Get the output of the layers
     features = {}
-    x = image
+    x = img
     for name, layer in model._modules.items():
         x = layer(x)
         if name in layers:

@@ -59,7 +59,7 @@ print ('[INFO]Model Loaded Successfully!')
 
 # Freeze the parameters as we won't be traning the model
 for param in vgg.parameters():
-    param.requires_grad(False)
+    param.requires_grad_(False)
 
 # Move the model to GPU (if)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -102,6 +102,7 @@ style_weight = FLAGS.style_weight
 
 # To display the image generated, at some Interval
 show_every = FLAGS.show_every
+print (show_every)
 
 # Iteration hyperparameters
 optimizer = optim.Adam([target], lr=FLAGS.learning_rate)
@@ -147,12 +148,14 @@ for ii in range(1, epochs+1):
     optimizer.step()
 
     print ('[INFO]Epoch {} Completed!'.format(ii))
+
     # Display if Interval
     if ii % show_every == 0:
-        print ('Epochs: {} Loss: {}'.format(ii, total_loss.item()))
+        print ('[INFO]Epochs: {} Loss: {}'.format(ii, total_loss.item()))
         im_image = im_convert(target)
         plt.imsave('./{}-{}.png'.format(ii, total_loss), im_image)
-        if show_image_at_intervals:
+        print ('[INFO]Saved Image for Epoch {} with Loss {}'.format(ii, total_loss.item()))
+        if FLAGS.show_image_at_intervals:
             plt.imshow(im_image)
             plt.axis('off')
             plt.show()
@@ -162,7 +165,14 @@ print ('[INFO]Style Transfer Complete!')
 print ('[INFO]Displaying final image!')
 # Display final image
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
+im_target = im_convert(target)
 ax1.imshow(im_convert(content))
-ax2.imshow(im_convert(target))
+ax2.imshow(im_target)
 ax1.axis('off'); ax2.axis('off')
 plt.show()
+
+print('[INFO]Saving final image...')
+plt.imsave('./{}-{}.png'.format(ii, total_loss), im_target)
+print('[INFO]Final image saved!')
+
+print ('[INFO]Exiting...')
