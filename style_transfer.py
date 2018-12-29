@@ -35,6 +35,16 @@ parser.add_argument('-se', '--show-every',
     default=500,
     help='Interval in which the target image being generated is shown')
 
+parser.add_argument('-e', '--epochs',
+    type=int,
+    default=3000,
+    help='The number of epochs')
+
+parser.add_argument('-si', '--show-image-at-intervals',
+    type=bool,
+    default=False,
+    help='Show image at intervals')
+
 FLAGS, unparsed = parser.parse_known_args()
 
 # Get the pretrained features of model
@@ -79,3 +89,62 @@ style_weight = FLAGS.style_weight
 
 # To display the image generated, at some Interval
 show_every = FLAGS.show_every
+
+# Iteration hyperparameters
+optimizer = optim.Adam([target], lr=0.003)
+epochs = FLAGS.epochs
+
+for ii in range(1, epochs+1):
+    # Get the features from target image
+    target_features = get_features(target, vgg)
+
+    # Calculate the content loss
+    content_loss = torch.mean((target_features['conv4_2'] - content_feaures['conv4_2']) ** 2)
+
+    # Calculating the style loss
+    # Intitialize the style loss to 0
+    style_loss = 0
+    # Iterate over the layers
+    for layer in style_weights:
+        # Get the target style representation
+        target_feature = target_features[layer]
+
+        # Get the dimensions
+        _, d, h, w = target_feature.shape
+
+        # Calculate the target gram matrix
+        target_gram = gram_matrix(target_feature)
+
+        # Get the corresponding style gram
+        style_gram = style_grams[layer]
+
+        # Calculate the style loss
+        layer_style_loss = style_weights[layer] * torch.mean((target_gram - style_gram) ** 2)
+
+        # Add to the style loss
+        style_loss += layer_style_loss / (d * w * h)
+
+    # Calculate the total loss
+    total_loss = (content_weight * content_loss) + (style_weight * style_loss)
+
+    # update the target image
+    optimizer.zero_grad()
+    total_loss.backward()
+    optimizer.step()
+
+    # Display if Interval
+    if ii % show_every == 0:
+        print ('Epochs: {} Loss: {}'.format(ii, total_loss.item()))
+        im_image = im_convert(target)
+        plt.imsave('./{}-{}.png'.format(ii, total_loss), im_image)
+        if show_image_at_intervals:
+            plt.imshow(im_image)
+            plt.axis('off')
+            plt.show()
+
+# Display final image
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
+ax1.imshow(im_convert(content))
+ax2.imshow(im_convert(target))
+ax1.axis('off'); ax2.axis('off')
+plt.show()
