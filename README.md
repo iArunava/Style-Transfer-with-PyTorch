@@ -31,13 +31,16 @@ python3 style_transfer.py -c='/path/to/content/image' -s='/path/to/style/image' 
 ## Examples
 
 Content Image:
-<img src='https://user-images.githubusercontent.com/26242097/50540731-39535d80-0bbd-11e9-8f77-1cc0d153c1b6.jpg'/>
+<img src='https://user-images.githubusercontent.com/26242097/50549153-9f071e80-0c7d-11e9-8070-ba48496aca68.jpg'/>
+Photo by Olivier Guillard on Unsplash
 
 Style Image:
-<img src='https://github.com/iArunava/Style-Transfer-with-PyTorch/blob/master/images/style_img/style2.jpg'/>
+<img src='https://user-images.githubusercontent.com/26242097/50549146-7d0d9c00-0c7d-11e9-8809-e6e44b3a1d8a.jpg'/>
+Photo by Ashkan Forouzani on Unsplash
 
 Stylized Image:
-<img src='https://user-images.githubusercontent.com/26242097/50540732-453f1f80-0bbd-11e9-883d-65131ea5122a.png'/>
+<img src='https://user-images.githubusercontent.com/26242097/50549118-2738f400-0c7d-11e9-8cf9-e4fdc99784b4.png'/>
+Photo by an Algorithm ;)
 
 ## License
 
